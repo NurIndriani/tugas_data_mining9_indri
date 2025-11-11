@@ -1,33 +1,30 @@
 import streamlit as st
 import pickle
 import numpy as np
+import Orange
+from Orange.data import Table
 
-# Judul Aplikasi
+# Judul aplikasi
 st.title("🌸 Prediksi Kategori Bunga Iris")
 st.write("Masukkan nilai fitur di bawah ini untuk memprediksi jenis bunga Iris.")
 
-# --- Load model ---
-# Ganti 'iris_model.pkcls' dengan nama file model kamu
-with open('tugas_data_mining_9_indri.pkcls', 'rb') as file:
-    model = pickle.load(file)
+# Load model
+model_path = "tugas_data_mining_9_indri.pkcls"  # nama file modelmu
+with open(model_path, "rb") as f:
+    model = pickle.load(f)
 
-# --- Input data dari user ---
-sepal_length = st.number_input("Sepal Length (cm)", min_value=0.0, max_value=10.0, step=0.1)
-sepal_width = st.number_input("Sepal Width (cm)", min_value=0.0, max_value=10.0, step=0.1)
-petal_length = st.number_input("Petal Length (cm)", min_value=0.0, max_value=10.0, step=0.1)
-petal_width = st.number_input("Petal Width (cm)", min_value=0.0, max_value=10.0, step=0.1)
+# Input fitur dari pengguna
+sepal_length = st.number_input("Sepal Length (cm)", min_value=0.0, max_value=10.0, value=5.1)
+sepal_width  = st.number_input("Sepal Width (cm)",  min_value=0.0, max_value=10.0, value=3.5)
+petal_length = st.number_input("Petal Length (cm)", min_value=0.0, max_value=10.0, value=1.4)
+petal_width  = st.number_input("Petal Width (cm)",  min_value=0.0, max_value=10.0, value=0.2)
 
-# --- Tombol Prediksi ---
-if st.button("Prediksi"):
-    # Menyiapkan data input
-    features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
-    
-    # Prediksi menggunakan model
-    prediction = model.predict(features)[0]
+# Prediksi saat tombol diklik
+if st.button("🔍 Prediksi"):
+    input_data = Table(model.domain, [[sepal_length, sepal_width, petal_length, petal_width]])
+    prediction = model(input_data)
+    st.subheader("Hasil Prediksi:")
+    st.success(f"Model memprediksi bunga termasuk ke dalam kategori: **{prediction[0]}**")
 
-    # Menampilkan hasil prediksi
-    st.success(f"🌼 Hasil Prediksi: **{prediction}**")
-
-# --- Info tambahan ---
-st.write("---")
-st.caption("Dibuat dengan ❤️ menggunakan Streamlit & model Machine Learning Iris")
+st.markdown("---")
+st.caption("Dibuat oleh Nur Indriani | UIN Alauddin Makassar")
